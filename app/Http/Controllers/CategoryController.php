@@ -7,11 +7,21 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::orderBy('name')->get();
+        $search = $request->string('search')->trim()->toString();
+        $categories = Category::query()
+            ->when($search !== '', function ($query) use ($search): void {
+                $query->where(function ($query) use ($search): void {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('name')
+            ->paginate(10)
+            ->withQueryString();
 
-        return view('categories.index', compact('categories'));
+        return view('categories.index', compact('categories', 'search'));
     }
 
     public function create()
@@ -50,6 +60,10 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
+        if ($category->products()->whereHas('transactions')->exists()) {
+            return redirect()->route('categories.index')->with('error', 'Không thể xóa danh mục vì có sản phẩm trong danh mục đã phát sinh phiếu nhập/xuất.');
+        }
+
         $category->delete();
 
         return redirect()->route('categories.index')->with('success', 'Danh mục đã được xóa.');

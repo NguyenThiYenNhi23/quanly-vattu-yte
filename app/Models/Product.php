@@ -15,16 +15,12 @@ class Product extends Model
         'category_id',
         'supplier_id',
         'unit',
-        'purchase_price',
-        'selling_price',
         'quantity',
         'reorder_level',
         'status',
     ];
 
     protected $casts = [
-        'purchase_price' => 'decimal:2',
-        'selling_price' => 'decimal:2',
         'quantity' => 'integer',
         'reorder_level' => 'integer',
     ];

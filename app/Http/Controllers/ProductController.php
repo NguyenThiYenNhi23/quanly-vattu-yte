@@ -10,13 +10,27 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->string('search')->trim()->toString();
         $products = Product::with(['category', 'supplier'])
+            ->when($search !== '', function ($query) use ($search): void {
+                $query->where(function ($query) use ($search): void {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('sku', 'like', "%{$search}%")
+                        ->orWhereHas('category', function ($query) use ($search): void {
+                            $query->where('name', 'like', "%{$search}%");
+                        })
+                        ->orWhereHas('supplier', function ($query) use ($search): void {
+                            $query->where('name', 'like', "%{$search}%");
+                        });
+                });
+            })
             ->orderBy('name')
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
-        return view('products.index', compact('products'));
+        return view('products.index', compact('products', 'search'));
     }
 
     public function create()
@@ -31,30 +45,23 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'sku' => ['required', 'string', 'max:100', 'unique:products,sku'],
             'category_id' => ['required', 'exists:categories,id'],
-            'supplier_id' => ['required', 'exists:suppliers,id'],
-            'unit' => ['required', 'string', 'max:50'],
-            'purchase_price' => ['required', 'numeric', 'min:0'],
-            'selling_price' => ['required', 'numeric', 'min:0'],
-            'quantity' => ['required', 'integer', 'min:0'],
-            'reorder_level' => ['required', 'integer', 'min:0'],
-            'status' => ['required', 'in:active,inactive'],
         ]);
 
-        $product = Product::create($validated);
+        $product = Product::create([
+            'name' => $validated['name'],
+            'sku' => 'SP-000000',
+            'category_id' => $validated['category_id'],
+            'supplier_id' => null,
+            'unit' => 'Cái',
+            'quantity' => 0,
+            'reorder_level' => 0,
+            'status' => 'active',
+        ]);
 
-        if ($product->quantity > 0) {
-            InventoryTransaction::create([
-                'product_id' => $product->id,
-                'type' => 'initial',
-                'quantity' => $product->quantity,
-                'unit_price' => $product->purchase_price,
-                'notes' => 'Khởi tạo số lượng ban đầu',
-                'reference' => 'INITIAL',
-                'performed_by' => auth()->user()?->name ?? 'System',
-            ]);
-        }
+        $product->update([
+            'sku' => 'SP-' . str_pad((string) $product->id, 6, '0', STR_PAD_LEFT),
+        ]);
 
         return redirect()->route('products.index')->with('success', 'Sản phẩm đã được tạo thành công.');
     }
@@ -71,38 +78,24 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'sku' => ['required', 'string', 'max:100', 'unique:products,sku,'.$product->id],
             'category_id' => ['required', 'exists:categories,id'],
-            'supplier_id' => ['required', 'exists:suppliers,id'],
-            'unit' => ['required', 'string', 'max:50'],
-            'purchase_price' => ['required', 'numeric', 'min:0'],
-            'selling_price' => ['required', 'numeric', 'min:0'],
-            'quantity' => ['required', 'integer', 'min:0'],
-            'reorder_level' => ['required', 'integer', 'min:0'],
-            'status' => ['required', 'in:active,inactive'],
         ]);
 
-        $oldQuantity = $product->quantity;
-        $product->update($validated);
-
-        $quantityDifference = $product->quantity - $oldQuantity;
-        if ($quantityDifference !== 0) {
-            InventoryTransaction::create([
-                'product_id' => $product->id,
-                'type' => 'adjustment',
-                'quantity' => $quantityDifference,
-                'unit_price' => $product->purchase_price,
-                'notes' => 'Điều chỉnh số lượng theo cập nhật',
-                'reference' => 'UPDATE',
-                'performed_by' => auth()->user()?->name ?? 'System',
-            ]);
-        }
+        $product->update([
+            'name' => $validated['name'],
+            'category_id' => $validated['category_id'],
+        ]);
 
         return redirect()->route('products.index')->with('success', 'Sản phẩm đã được cập nhật.');
     }
 
+
     public function destroy(Product $product)
     {
+        if ($product->transactions()->exists()) {
+            return redirect()->route('products.index')->with('error', 'Không thể xóa sản phẩm vì đã có phát sinh phiếu nhập/xuất liên quan.');
+        }
+
         $product->delete();
 
         return redirect()->route('products.index')->with('success', 'Sản phẩm đã được xóa.');

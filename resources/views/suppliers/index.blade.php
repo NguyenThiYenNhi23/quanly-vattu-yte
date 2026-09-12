@@ -1,48 +1,10 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-slate-800 leading-tight">Nhà cung cấp</h2>
-            <a href="{{ route('suppliers.create') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Thêm nhà cung cấp</a>
-        </div>
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div><p class="text-sm font-medium text-emerald-700">Đối tác cung ứng</p><h2 class="mt-1 text-2xl font-bold tracking-tight text-slate-900">Nhà cung cấp</h2></div><a href="{{ route('suppliers.create') }}" class="rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-4 py-2.5 text-center text-sm font-semibold text-white shadow-md shadow-emerald-200 transition hover:from-emerald-700 hover:to-teal-700">+ Thêm nhà cung cấp</a></div>
     </x-slot>
-
-    <div class="py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                <table class="min-w-full divide-y divide-slate-200">
-                    <thead class="bg-slate-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-semibold uppercase text-slate-500">Tên</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold uppercase text-slate-500">Liên hệ</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold uppercase text-slate-500">Điện thoại</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold uppercase text-slate-500">Email</th>
-                            <th class="px-6 py-3 text-right text-xs font-semibold uppercase text-slate-500">Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-200">
-                        @forelse ($suppliers as $supplier)
-                            <tr>
-                                <td class="px-6 py-4 font-medium text-slate-800">{{ $supplier->name }}</td>
-                                <td class="px-6 py-4 text-slate-600">{{ $supplier->contact_name }}</td>
-                                <td class="px-6 py-4 text-slate-600">{{ $supplier->phone }}</td>
-                                <td class="px-6 py-4 text-slate-600">{{ $supplier->email }}</td>
-                                <td class="px-6 py-4 text-right space-x-2">
-                                    <a href="{{ route('suppliers.edit', $supplier) }}" class="text-indigo-600 hover:underline">Sửa</a>
-                                    <form action="{{ route('suppliers.destroy', $supplier) }}" method="POST" class="inline-block" onsubmit="return confirm('Xác nhận xóa nhà cung cấp?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:underline">Xóa</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="px-6 py-8 text-center text-slate-500">Chưa có nhà cung cấp nào.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+    <div class="py-8"><div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"><div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div class="flex flex-col gap-4 border-b border-slate-100 bg-emerald-50/60 px-6 py-5 lg:flex-row lg:items-center lg:justify-between"><div><h3 class="font-semibold text-slate-900">Danh sách nhà cung cấp</h3><p class="mt-1 text-sm text-slate-500">{{ $suppliers->total() }} đối tác cung ứng</p></div><form method="GET" class="flex w-full gap-2 lg:w-auto"><input type="search" name="search" value="{{ $search }}" placeholder="Tìm tên, SĐT hoặc email..." class="w-full rounded-xl border-slate-300 bg-white px-4 py-2 text-sm shadow-sm focus:border-emerald-600 focus:ring-emerald-600 lg:w-80"><button class="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-emerald-700 shadow-sm ring-1 ring-emerald-200 hover:bg-emerald-100">Tìm</button></form></div>
+        <div class="overflow-x-auto"><table class="min-w-full divide-y divide-slate-100"><thead class="bg-slate-50/80"><tr><th class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Nhà cung cấp</th><th class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Liên hệ</th><th class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Điện thoại</th><th class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Email</th><th class="px-6 py-3.5 text-right text-xs font-bold uppercase tracking-wider text-slate-500">Thao tác</th></tr></thead><tbody class="divide-y divide-slate-100">@forelse ($suppliers as $supplier)<tr class="transition hover:bg-emerald-50/40"><td class="px-6 py-4 font-semibold text-slate-800">{{ $supplier->name }}</td><td class="px-6 py-4 text-sm text-slate-600">{{ $supplier->contact_name }}</td><td class="px-6 py-4 text-sm font-medium text-slate-700">{{ $supplier->phone }}</td><td class="px-6 py-4 text-sm text-slate-600">{{ $supplier->email }}</td><td class="whitespace-nowrap px-6 py-4 text-right"><a href="{{ route('suppliers.edit', $supplier) }}" class="rounded-lg px-3 py-2 text-sm font-semibold text-emerald-700 hover:bg-emerald-100">Sửa</a><form action="{{ route('suppliers.destroy', $supplier) }}" method="POST" class="inline" onsubmit="return confirm('Xác nhận xóa nhà cung cấp?')">@csrf @method('DELETE')<button class="rounded-lg px-3 py-2 text-sm font-semibold text-rose-600 hover:bg-rose-50">Xóa</button></form></td></tr>@empty<tr><td colspan="5" class="px-6 py-14 text-center text-sm text-slate-500">{{ $search ? 'Không tìm thấy nhà cung cấp phù hợp.' : 'Chưa có nhà cung cấp nào.' }}</td></tr>@endforelse</tbody></table></div>
+        @if ($suppliers->hasPages())<div class="border-t border-slate-100 px-6 py-4">{{ $suppliers->links() }}</div>@endif
+    </div></div></div>
 </x-app-layout>

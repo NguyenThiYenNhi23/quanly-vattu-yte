@@ -8,6 +8,18 @@
 
     <div class="py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            @if (session('success'))
+                <div class="mb-6 flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800">
+                    <span class="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-600 text-white">✓</span>{{ session('success') }}
+                </div>
+            @endif
+
+            @if (session('error'))
+                <div class="mb-6 flex items-center gap-3 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-800">
+                    <span class="flex h-6 w-6 items-center justify-center rounded-full bg-rose-600 text-white">!</span>{{ session('error') }}
+                </div>
+            @endif
+
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                 <table class="min-w-full divide-y divide-slate-200">
                     <thead class="bg-slate-50">
@@ -16,7 +28,6 @@
                             <th class="px-6 py-3 text-left text-xs font-semibold uppercase text-slate-500">SKU</th>
                             <th class="px-6 py-3 text-left text-xs font-semibold uppercase text-slate-500">Danh mục</th>
                             <th class="px-6 py-3 text-left text-xs font-semibold uppercase text-slate-500">Tồn kho</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold uppercase text-slate-500">Giá</th>
                             <th class="px-6 py-3 text-right text-xs font-semibold uppercase text-slate-500">Thao tác</th>
                         </tr>
                     </thead>
@@ -27,7 +38,6 @@
                                 <td class="px-6 py-4 text-slate-600">{{ $product->sku }}</td>
                                 <td class="px-6 py-4 text-slate-600">{{ $product->category->name ?? '—' }}</td>
                                 <td class="px-6 py-4 text-slate-600">{{ $product->quantity }} {{ $product->unit }}</td>
-                                <td class="px-6 py-4 text-slate-600">{{ number_format($product->selling_price, 0, ',', '.') }}đ</td>
                                 <td class="px-6 py-4 text-right space-x-2">
                                     <a href="{{ route('products.edit', $product) }}" class="text-indigo-600 hover:underline">Sửa</a>
                                     <form action="{{ route('products.destroy', $product) }}" method="POST" class="inline-block" onsubmit="return confirm('Xác nhận xóa sản phẩm?')">
@@ -39,7 +49,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="px-6 py-8 text-center text-slate-500">Chưa có sản phẩm nào.</td>
+                                <td colspan="5" class="px-6 py-8 text-center text-slate-500">Chưa có sản phẩm nào.</td>
                             </tr>
                         @endforelse
                     </tbody>

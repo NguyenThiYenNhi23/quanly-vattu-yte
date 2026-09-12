@@ -13,8 +13,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('sku')->unique();
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('supplier_id')->constrained()->cascadeOnDelete();
-            $table->string('unit');
+            $table->foreignId('supplier_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('unit')->default('Cái');
             $table->decimal('purchase_price', 12, 2)->default(0);
             $table->decimal('selling_price', 12, 2)->default(0);
             $table->integer('quantity')->default(0);

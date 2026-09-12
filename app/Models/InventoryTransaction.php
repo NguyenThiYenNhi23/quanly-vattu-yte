@@ -11,6 +11,8 @@ class InventoryTransaction extends Model
 
     protected $fillable = [
         'product_id',
+        'supplier_id',
+        'customer_id',
         'type',
         'quantity',
         'unit_price',
@@ -27,5 +29,15 @@ class InventoryTransaction extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function supplier()
+    {
+        return $this->belongsTo(\App\Models\Supplier::class);
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(\App\Models\Customer::class);
     }
 }

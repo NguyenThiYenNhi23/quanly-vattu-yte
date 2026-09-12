@@ -7,7 +7,7 @@
 
     <div class="py-10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6 mb-8">
                 <div class="rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 p-6 text-white shadow">
                     <p class="text-sm opacity-80">Danh mục</p>
                     <h3 class="mt-3 text-3xl font-bold">{{ $totalCategories }}</h3>
@@ -16,13 +16,14 @@
                     <p class="text-sm opacity-80">Nhà cung cấp</p>
                     <h3 class="mt-3 text-3xl font-bold">{{ $totalSuppliers }}</h3>
                 </div>
+                <a href="{{ route('customers.index') }}" class="rounded-2xl bg-gradient-to-br from-cyan-500 to-cyan-700 p-6 text-white shadow transition hover:-translate-y-0.5 hover:shadow-lg">
+                    <p class="text-sm opacity-80">Khách hàng</p>
+                    <h3 class="mt-3 text-3xl font-bold">{{ $totalCustomers }}</h3>
+                    <p class="mt-3 text-xs font-medium opacity-80">Quản lý danh bạ →</p>
+                </a>
                 <div class="rounded-2xl bg-gradient-to-br from-violet-500 to-violet-700 p-6 text-white shadow">
                     <p class="text-sm opacity-80">Sản phẩm</p>
                     <h3 class="mt-3 text-3xl font-bold">{{ $totalProducts }}</h3>
-                </div>
-                <div class="rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 p-6 text-white shadow">
-                    <p class="text-sm opacity-80">Giá trị tồn kho</p>
-                    <h3 class="mt-3 text-3xl font-bold">{{ number_format($inventoryValue, 0, ',', '.') }}đ</h3>
                 </div>
             </div>
 

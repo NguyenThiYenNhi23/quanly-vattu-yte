@@ -11,6 +11,8 @@ return new class extends Migration
         Schema::create('inventory_transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('supplier_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('customer_id')->nullable()->constrained()->nullOnDelete();
             $table->enum('type', ['import', 'export', 'adjustment', 'initial']);
             $table->integer('quantity')->default(0);
             $table->decimal('unit_price', 12, 2)->nullable();

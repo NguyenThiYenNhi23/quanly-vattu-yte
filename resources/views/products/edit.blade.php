@@ -10,56 +10,17 @@
                     @csrf
                     @method('PUT')
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div>
+                        <div class="md:col-span-2">
                             <label class="block text-sm font-medium text-slate-700">Tên sản phẩm</label>
                             <input type="text" name="name" value="{{ old('name', $product->name) }}" class="mt-1 w-full border-slate-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700">Mã SKU</label>
-                            <input type="text" name="sku" value="{{ old('sku', $product->sku) }}" class="mt-1 w-full border-slate-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
-                        </div>
-                        <div>
+                        <div class="md:col-span-2">
                             <label class="block text-sm font-medium text-slate-700">Danh mục</label>
                             <select name="category_id" class="mt-1 w-full border-slate-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                                 @endforeach
                             </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700">Nhà cung cấp</label>
-                            <select name="supplier_id" class="mt-1 w-full border-slate-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
-                                @foreach ($suppliers as $supplier)
-                                    <option value="{{ $supplier->id }}" {{ old('supplier_id', $product->supplier_id) == $supplier->id ? 'selected' : '' }}>{{ $supplier->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700">Đơn vị tính</label>
-                            <input type="text" name="unit" value="{{ old('unit', $product->unit) }}" class="mt-1 w-full border-slate-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700">Trạng thái</label>
-                            <select name="status" class="mt-1 w-full border-slate-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
-                                <option value="active" {{ old('status', $product->status) == 'active' ? 'selected' : '' }}>Hoạt động</option>
-                                <option value="inactive" {{ old('status', $product->status) == 'inactive' ? 'selected' : '' }}>Ngừng</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700">Giá nhập</label>
-                            <input type="number" name="purchase_price" value="{{ old('purchase_price', $product->purchase_price) }}" min="0" class="mt-1 w-full border-slate-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700">Giá bán</label>
-                            <input type="number" name="selling_price" value="{{ old('selling_price', $product->selling_price) }}" min="0" class="mt-1 w-full border-slate-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700">Số lượng hiện có</label>
-                            <input type="number" name="quantity" value="{{ old('quantity', $product->quantity) }}" min="0" class="mt-1 w-full border-slate-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700">Mức cảnh báo</label>
-                            <input type="number" name="reorder_level" value="{{ old('reorder_level', $product->reorder_level) }}" min="0" class="mt-1 w-full border-slate-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
                         </div>
                     </div>
                     <div class="flex justify-end gap-3">
